@@ -1,12 +1,36 @@
 defmodule AnimalBackendWeb.Router do
   use AnimalBackendWeb, :router
 
+  import AnimalBackendWeb.UserAuth
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth_api do
+    plug :fetch_api_user
+  end
+
   scope "/api", AnimalBackendWeb do
     pipe_through :api
+
+    ## Authentication routes
+
+    scope "/" do
+      pipe_through [:auth_api]
+      put "/users/settings", UserSettingsController, :update
+      delete "/users/log_out", UserSessionController, :delete
+      post "/users/confirm", UserConfirmationController, :create
+    end
+
+    scope "/" do
+      post "/users/confirm/:token", UserConfirmationController, :update
+      get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+      post "/users/register", UserRegistrationController, :create
+      post "/users/log_in", UserSessionController, :create
+      post "/users/reset_password", UserResetPasswordController, :create
+      put "/users/reset_password/:token", UserResetPasswordController, :update
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
