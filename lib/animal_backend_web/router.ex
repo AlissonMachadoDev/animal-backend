@@ -21,6 +21,9 @@ defmodule AnimalBackendWeb.Router do
       put "/users/settings", UserSettingsController, :update
       delete "/users/log_out", UserSessionController, :delete
       post "/users/confirm", UserConfirmationController, :create
+
+      get "/match/start", GameController, :create_match
+      post "/match/get-cards", GameController, :get_user_match_cards
     end
 
     scope "/" do

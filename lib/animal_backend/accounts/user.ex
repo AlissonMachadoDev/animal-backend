@@ -2,6 +2,10 @@ defmodule AnimalBackend.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias AnimalBackend.GameStructure.UserCard
+  alias AnimalBackend.GameStructure.Card
+  alias AnimalBackend.GameStructure.MatchUser
+
   @derive {Jason.Encoder, only: [:email, :confirmed_at]}
   schema "users" do
     field :email, :string
@@ -10,7 +14,15 @@ defmodule AnimalBackend.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
 
+    has_many :user_cards, UserCard
+    many_to_many :cards, Card, join_through: UserCard
+    many_to_many :matches, Card, join_through: MatchUser
+
     timestamps(type: :utc_datetime)
+  end
+
+  def format_struct(user) do
+    %{id: user.id, email: user.email, inserted_at: user.inserted_at}
   end
 
   @doc """

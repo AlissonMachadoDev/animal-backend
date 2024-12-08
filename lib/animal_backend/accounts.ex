@@ -11,6 +11,19 @@ defmodule AnimalBackend.Accounts do
   ## Database getters
 
   @doc """
+  Returns the list of Users.
+
+  ## Examples
+
+      iex> list_users()
+      [%Users{}, ...]
+
+  """
+  def list_users do
+    Repo.all(User)
+  end
+
+  @doc """
   Gets a user by email.
 
   ## Examples
